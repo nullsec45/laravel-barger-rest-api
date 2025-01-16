@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\V1\ArticleController;
 use App\Http\Controllers\API\V1\AuthorController;
+use App\Http\Controllers\API\V1\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -27,4 +28,7 @@ Route::group(['prefix' => 'v1','middleware' => 'auth:sanctum'], function(){
 
     // Authors
     Route::get('/authors/{user}', [AuthorController::class,'show'])->name('authors');
+
+    // User
+    Route::get('/user', UserController::class)->name('user');
 });

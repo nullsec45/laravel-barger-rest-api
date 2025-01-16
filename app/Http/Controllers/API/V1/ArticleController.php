@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\API\V1;
 
-use App\Http\Resources\V1\ArticleResource;
 use App\Models\Article;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ArticleRequest;
+use App\Http\Resources\V1\ArticleResource;
 use App\Http\Resources\V1\ArticleCollection;
 
 class ArticleController extends Controller
@@ -21,9 +23,17 @@ class ArticleController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(ArticleRequest $request)
     {
-        //
+        $article=Article::create([
+            'title' => $request->title,
+            'slug' => Str::slug($request->title),
+            'body' => $request->body,
+            'author_id' => auth()->id ?? 1
+        ]);
+
+
+        return (new ArticleResource($article))->response()->setStatusCode(201);
     }
 
     /**
@@ -41,7 +51,14 @@ class ArticleController extends Controller
      */
     public function update(Request $request, Article $article)
     {
-        //
+        $article->update([
+            'title' => $request->title,
+            'slug' => Str::slug($request->title),
+            'body' => $request->body,
+            'author_id' => auth()->id() ?? 1
+        ]);
+
+        return (new ArticleResource($article))->response()->setStatusCode(200);
     }
 
     /**
@@ -49,6 +66,9 @@ class ArticleController extends Controller
      */
     public function destroy(Article $article)
     {
-        //
+        $article->delete();
+
+
+        return response()->json(null,204);
     }
 }
